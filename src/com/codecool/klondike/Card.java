@@ -81,7 +81,7 @@ public class Card extends ImageView {
         if (card2 == null) {
             return true;
         }
-        System.out.println(card1.suit + " " + card2.suit);
+
         if (card1.suit == 1 && card2.suit == 2 || card1.suit == 2 && card2.suit == 1 || card1.suit == card2.suit) {
             return false;
         } else if (card1.suit == 3 && card2.suit == 4 || card1.suit == 4 && card2.suit == 3 || card1.suit == card2.suit) {
@@ -107,7 +107,7 @@ public class Card extends ImageView {
     }
 
     public static void loadCardImages() {
-        cardBackImage = new Image("card_images/card_back.png");
+        cardBackImage = new Image("card_images/Mojipower_Blue-Unicorn_1.jpg");
         String suitName = "";
         for (int suit = 1; suit < 5; suit++) {
             switch (suit) {
