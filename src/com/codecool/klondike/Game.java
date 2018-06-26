@@ -81,6 +81,9 @@ public class Game extends Pane {
 
         if (pile != null && Card.isOppositeColor(card, pile.getTopCard())) {
             handleValidMove(card, pile);
+            if (!pile.isEmpty()) {
+                card.getContainingPile().getCards().get(card.getContainingPile().getCards().size() - 2).flip();
+            }
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
 //            draggedCards = null;
