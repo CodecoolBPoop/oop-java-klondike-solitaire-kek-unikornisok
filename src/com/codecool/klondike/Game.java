@@ -83,7 +83,7 @@ public class Game extends Pane {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards = null;
+//            draggedCards = null;
         }
     };
 
@@ -181,14 +181,23 @@ public class Game extends Pane {
     }
 
     public void dealCards() {
-        Iterator<Card> deckIterator = deck.iterator();
-        //TODO
-        deckIterator.forEachRemaining(card -> {
-            stockPile.addCard(card);
-            addMouseEventHandlers(card);
-            getChildren().add(card);
-        });
+        int cardCounter = 0;
+        for (int i = 0; i < tableauPiles.size(); i++) {
+            for (int j = 7 - i; j < 8; j++) {
+                tableauPiles.get(i).addCard(deck.get(cardCounter));
+                addMouseEventHandlers(deck.get(cardCounter));
+                getChildren().add(deck.get(cardCounter));
+                cardCounter++;
+            }
+            tableauPiles.get(i).getTopCard().flip();
+        }
 
+        for (int i = deck.size() - 1; i > 27; i--) {
+            stockPile.addCard(deck.get(i));
+            addMouseEventHandlers(deck.get(i));
+            getChildren().add(deck.get(i));
+            cardCounter++;
+        }
     }
 
     public void setTableBackground(Image tableBackground) {
