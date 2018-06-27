@@ -96,9 +96,10 @@ public class Game extends Pane {
     };
 
     public boolean isGameWon() {
-        //TODO
         return false;
     }
+
+
 
     public Game() {
         deck = Card.createNewDeck();
@@ -114,11 +115,10 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        for(int i = discardPile.numOfCards(); i > -1; i--){
-            discardPile.getLastCard().flip();
-            discardPile.getLastCard().moveToPile(stockPile);
+        for(int i = discardPile.numOfCards(); i > 0; i--){
+            discardPile.getTopCard().moveToPile(stockPile);
+            stockPile.getTopCard().flip();
         }
-
         System.out.println("Stock refilled from discard pile.");
     }
 
@@ -134,6 +134,7 @@ public class Game extends Pane {
                     isMoveValid(card, pile))
                 result = pile;
         }
+        isGameWon();
         return result;
     }
 
