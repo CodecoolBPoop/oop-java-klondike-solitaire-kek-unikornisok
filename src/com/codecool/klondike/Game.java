@@ -12,6 +12,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
+import javafx.collections.ObservableArray;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -100,9 +101,6 @@ public class Game extends Pane {
             draggedCards.forEach(MouseUtil::slideBack);
 //            draggedCards = null;
         }
-        //foundationPile:
-
-
     };
 
     public boolean isGameWon() {
@@ -124,7 +122,10 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        //TODO
+        for(int i = discardPile.numOfCards(); i > 0; i--){
+            discardPile.getTopCard().moveToPile(stockPile);
+            stockPile.getTopCard().flip();
+        }
         System.out.println("Stock refilled from discard pile.");
     }
 
@@ -140,6 +141,7 @@ public class Game extends Pane {
                     isMoveValid(card, pile))
                 result = pile;
         }
+        isGameWon();
         return result;
     }
 
@@ -152,16 +154,24 @@ public class Game extends Pane {
 
     private void handleValidMove(Card card, Pile destPile) {
         String msg = null;
+        Card.CardRank rank = card.getRank();
         if (destPile.isEmpty()) {
-            if (destPile.getPileType().equals(Pile.PileType.FOUNDATION));
+            if (destPile.getPileType().equals(Pile.PileType.FOUNDATION)) {
                 msg = String.format("Placed %s to the foundation.", card);
-            if (destPile.getPileType().equals(Pile.PileType.TABLEAU))
+            }
+            if (destPile.getPileType().equals(Pile.PileType.TABLEAU) && card.getRank().equals(Card.CardRank.KING)) {
                 msg = String.format("Placed %s to a new pile.", card);
+                MouseUtil.slideToDest(draggedCards, destPile);
+            } else {
+                draggedCards.forEach(MouseUtil::slideBack);
+            }
+        } else if (!destPile.isEmpty() && Card.CardRank.values()[rank.ordinal() + 1] == destPile.getTopCard().getRank()) {
+            MouseUtil.slideToDest(draggedCards, destPile);
         } else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
+            draggedCards.forEach(MouseUtil::slideBack);
         }
-        System.out.println(msg);
-        MouseUtil.slideToDest(draggedCards, destPile);
+        //System.out.println(msg);
         draggedCards.clear();
     }
 

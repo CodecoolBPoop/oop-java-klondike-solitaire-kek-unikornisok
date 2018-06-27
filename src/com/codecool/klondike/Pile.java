@@ -40,8 +40,8 @@ public class Pile extends Pane {
     }
 
     public int numOfCards() {
-        //TODO
-        return 1;
+
+        return getCards().size();
     }
 
     public boolean isEmpty() {
@@ -49,7 +49,7 @@ public class Pile extends Pane {
     }
 
     public void clear() {
-        //TODO
+
     }
 
     public void addCard(Card card) {
@@ -68,10 +68,20 @@ public class Pile extends Pane {
     }
 
     public Card getTopCard() {
-        if (cards.isEmpty())
+        if (cards.isEmpty()) {
             return null;
-        else
-            return cards.get(cards.size() - 1);
+        }
+        else{
+            return cards.get(cards.size() - 1);}
+    }
+
+    public Card getLastCard(){
+        if (cards.isEmpty()){
+            return null;
+        }
+        else{
+            return cards.get(0);
+        }
     }
 
     public void setBlurredBackground() {
