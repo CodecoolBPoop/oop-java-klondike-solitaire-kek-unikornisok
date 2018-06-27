@@ -77,6 +77,7 @@ public class Game extends Pane {
         if (draggedCards.isEmpty())
             return;
         Card card = (Card) e.getSource();
+        Pile foundationPile = getValidIntersectingPile(card, foundationPiles);
         Pile pile = getValidIntersectingPile(card, tableauPiles);
         Card lastCardFromPrePile = null;
         if (card.getContainingPile().getCards().size() > 1) {
@@ -85,13 +86,23 @@ public class Game extends Pane {
 
         if (pile != null && Card.isOppositeColor(card, pile.getTopCard())) {
             handleValidMove(card, pile);
-            if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown() ) {
+            if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown()) {
                 lastCardFromPrePile.flip();
             }
-        } else {
+        }
+        else if (foundationPile != null && Card.sortFoundationPile(card, foundationPile.getTopCard())) {
+            handleValidMove(card, foundationPile);
+            if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown()) {
+                lastCardFromPrePile.flip();
+            }
+        }
+        else {
             draggedCards.forEach(MouseUtil::slideBack);
 //            draggedCards = null;
         }
+        //foundationPile:
+
+
     };
 
     public boolean isGameWon() {
