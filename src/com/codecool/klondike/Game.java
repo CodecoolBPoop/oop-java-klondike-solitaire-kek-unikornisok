@@ -94,6 +94,8 @@ public class Game extends Pane {
         else if (foundationPile != null && Card.sortFoundationPile(card, foundationPile.getTopCard())) {
             handleValidMove(card, foundationPile);
             if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown()) {
+                System.out.println("pina");
+
                 lastCardFromPrePile.flip();
             }
         }
@@ -156,8 +158,9 @@ public class Game extends Pane {
         String msg = null;
         Card.CardRank rank = card.getRank();
         if (destPile.isEmpty()) {
-            if (destPile.getPileType().equals(Pile.PileType.FOUNDATION)) {
+            if (destPile.getPileType().equals(Pile.PileType.FOUNDATION) && Card.sortFoundationPile(card, destPile.getTopCard())) {
                 msg = String.format("Placed %s to the foundation.", card);
+                MouseUtil.slideToDest(draggedCards, destPile);
             }
             if (destPile.getPileType().equals(Pile.PileType.TABLEAU) && card.getRank().equals(Card.CardRank.KING)) {
                 msg = String.format("Placed %s to a new pile.", card);
@@ -167,7 +170,12 @@ public class Game extends Pane {
             }
         } else if (!destPile.isEmpty() && Card.CardRank.values()[rank.ordinal() + 1] == destPile.getTopCard().getRank()) {
             MouseUtil.slideToDest(draggedCards, destPile);
-        } else {
+        }
+        else if(destPile.getPileType().equals(Pile.PileType.FOUNDATION) && Card.sortFoundationPile(card, destPile.getTopCard())) {
+            msg = String.format("Placed %s to the foundation.", card);
+            MouseUtil.slideToDest(draggedCards, destPile);
+        }
+        else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
             draggedCards.forEach(MouseUtil::slideBack);
         }

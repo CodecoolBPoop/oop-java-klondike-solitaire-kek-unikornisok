@@ -178,10 +178,11 @@ public class Card extends ImageView {
 
         }
     public static boolean sortFoundationPile(Card card1, Card card2) {
-        if (card2 == null && card1.getRank() == 1) {
+        CardRank rank = card1.getRank();
+        if (card2 == null && card1.getRank() == CardRank.ACE) {
             return true;
         }
-        if(card2 != null && card1.getRank() - 1 == card2.getRank() && card1.getSuit() == card2.getSuit()) {
+        if(card2 != null && CardRank.values()[rank.ordinal() - 1] == card2.getRank() && card1.getSuit() == card2.getSuit()) {
             return true;
         }
         else {
