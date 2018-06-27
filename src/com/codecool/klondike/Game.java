@@ -90,6 +90,7 @@ public class Game extends Pane {
             }
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
+            //handleValidMove(card, pile);
 //            draggedCards = null;
         }
     };
@@ -142,15 +143,23 @@ public class Game extends Pane {
     private void handleValidMove(Card card, Pile destPile) {
         String msg = null;
         if (destPile.isEmpty()) {
-            if (destPile.getPileType().equals(Pile.PileType.FOUNDATION))
+            if (destPile.getPileType().equals(Pile.PileType.FOUNDATION)) {
                 msg = String.format("Placed %s to the foundation.", card);
-            if (destPile.getPileType().equals(Pile.PileType.TABLEAU))
+            }
+            if (destPile.getPileType().equals(Pile.PileType.TABLEAU) && card.getRank() == 13) {
                 msg = String.format("Placed %s to a new pile.", card);
+                MouseUtil.slideToDest(draggedCards, destPile);
+            } else {
+                draggedCards.forEach(MouseUtil::slideBack);
+            }
+        } else if (!destPile.isEmpty() && card.getRank() + 1 == destPile.getTopCard().getRank()) {
+            MouseUtil.slideToDest(draggedCards, destPile);
+            System.out.println("valid");
         } else {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
+            draggedCards.forEach(MouseUtil::slideBack);
         }
-        System.out.println(msg);
-        MouseUtil.slideToDest(draggedCards, destPile);
+        //System.out.println(msg);
         draggedCards.clear();
     }
 
