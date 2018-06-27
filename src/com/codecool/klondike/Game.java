@@ -153,7 +153,7 @@ public class Game extends Pane {
     private void handleValidMove(Card card, Pile destPile) {
         String msg = null;
         if (destPile.isEmpty()) {
-            if (destPile.getPileType().equals(Pile.PileType.FOUNDATION))
+            if (destPile.getPileType().equals(Pile.PileType.FOUNDATION));
                 msg = String.format("Placed %s to the foundation.", card);
             if (destPile.getPileType().equals(Pile.PileType.TABLEAU))
                 msg = String.format("Placed %s to a new pile.", card);

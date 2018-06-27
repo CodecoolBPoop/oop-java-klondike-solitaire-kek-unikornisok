@@ -131,6 +131,18 @@ public class Card extends ImageView {
                 cardFaceImages.put(cardId, new Image(imageFileName));
             }
         }
-    }
 
+
+        }
+    public static boolean sortFoundationPile(Card card1, Card card2) {
+        if (card2 == null && card1.getRank() == 1) {
+            return true;
+        }
+        if(card2 != null && card1.getRank() - 1 == card2.getRank() && card1.getSuit() == card2.getSuit()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
