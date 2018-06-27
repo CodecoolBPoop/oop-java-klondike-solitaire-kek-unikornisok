@@ -12,6 +12,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
+import javafx.collections.ObservableArray;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -113,7 +114,11 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        //TODO
+        for(int i = discardPile.numOfCards(); i > -1; i--){
+            discardPile.getLastCard().flip();
+            discardPile.getLastCard().moveToPile(stockPile);
+        }
+
         System.out.println("Stock refilled from discard pile.");
     }
 
