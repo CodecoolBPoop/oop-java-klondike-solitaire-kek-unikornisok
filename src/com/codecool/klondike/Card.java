@@ -104,7 +104,7 @@ public class Card extends ImageView {
     }
 
     public static void loadCardImages() {
-        cardBackImage = new Image("card_images/Mojipower_Blue-Unicorn_1.jpg");
+        cardBackImage = new Image("card_images/unicorn.png");
         String suitName = "";
         String rankName = "";
         for (CardSuit suit : CardSuit.values()) {
