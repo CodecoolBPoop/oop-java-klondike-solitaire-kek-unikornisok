@@ -67,15 +67,26 @@ public class Game extends Pane {
             double offsetY = e.getSceneY() - dragStartY;
 
             draggedCards.clear();
-            draggedCards.add(card);
 
-            card.getDropShadow().setRadius(20);
-            card.getDropShadow().setOffsetX(10);
-            card.getDropShadow().setOffsetY(10);
+            List<Card> cardsToDrag = FXCollections.observableArrayList();
+            cardsToDrag = activePile.getCards();
+            boolean needsToBeDragged = false;
+            for (int i = 0; i < cardsToDrag.size(); i++) {
+                if (cardsToDrag.get(i) == card) {
+                    needsToBeDragged = true;
+                }
+                if (needsToBeDragged) {
+                    draggedCards.add(cardsToDrag.get(i));
 
-            card.toFront();
-            card.setTranslateX(offsetX);
-            card.setTranslateY(offsetY);
+                    cardsToDrag.get(i).getDropShadow().setRadius(20);
+                    cardsToDrag.get(i).getDropShadow().setOffsetX(10);
+                    cardsToDrag.get(i).getDropShadow().setOffsetY(10);
+
+                    cardsToDrag.get(i).toFront();
+                    cardsToDrag.get(i).setTranslateX(offsetX);
+                    cardsToDrag.get(i).setTranslateY(offsetY);
+                }
+            }
         }
     };
 
