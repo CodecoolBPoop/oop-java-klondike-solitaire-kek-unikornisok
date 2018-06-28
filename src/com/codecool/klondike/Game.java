@@ -50,17 +50,21 @@ public class Game extends Pane {
     };
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
-        dragStartX = e.getSceneX();
-        dragStartY = e.getSceneY();
+        Card card = (Card) e.getSource();
+        if (!card.isFaceDown()) {
+            dragStartX = e.getSceneX();
+            dragStartY = e.getSceneY();
+        }
     };
 
     private EventHandler<MouseEvent> onMouseDraggedHandler = e -> {
         Card card = (Card) e.getSource();
         Pile activePile = card.getContainingPile();
-        if (activePile.getPileType() == Pile.PileType.STOCK)
-            return;
-        double offsetX = e.getSceneX() - dragStartX;
-        double offsetY = e.getSceneY() - dragStartY;
+        if (!card.isFaceDown()) {
+            if (activePile.getPileType() == Pile.PileType.STOCK)
+                return;
+            double offsetX = e.getSceneX() - dragStartX;
+            double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
 
@@ -100,7 +104,7 @@ public class Game extends Pane {
 
         if (pile != null && Card.isOppositeColor(card, pile.getTopCard())) {
             handleValidMove(card, pile);
-            if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown()) {
+            if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown() && Card.CardRank.values()[rank.ordinal() + 1] == pile.getTopCard().getRank()) {
                 lastCardFromPrePile.flip();
             }
         }
@@ -143,7 +147,7 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        //TODO
+
         return true;
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
