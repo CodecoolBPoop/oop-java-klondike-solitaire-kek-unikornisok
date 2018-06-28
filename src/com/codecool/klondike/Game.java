@@ -30,6 +30,8 @@ public class Game extends Pane {
     private double dragStartX, dragStartY;
     private List<Card> draggedCards = FXCollections.observableArrayList();
 
+    private Pile sourcePile;
+
     private static double STOCK_GAP = 1;
     private static double FOUNDATION_GAP = 0;
     private static double TABLEAU_GAP = 30;
@@ -51,6 +53,7 @@ public class Game extends Pane {
 
     private EventHandler<MouseEvent> onMousePressedHandler = e -> {
         Card card = (Card) e.getSource();
+        sourcePile = card.getContainingPile();
         if (!card.isFaceDown()) {
             dragStartX = e.getSceneX();
             dragStartY = e.getSceneY();
@@ -94,31 +97,25 @@ public class Game extends Pane {
         if (draggedCards.isEmpty())
             return;
         Card card = (Card) e.getSource();
-        Pile foundationPile = getValidIntersectingPile(card, foundationPiles);
-        Pile pile = getValidIntersectingPile(card, tableauPiles);
-        Card lastCardFromPrePile = null;
-        Card.CardRank rank = card.getRank();
-
-        if (card.getContainingPile().getCards().size() > 1) {
-            lastCardFromPrePile = card.getContainingPile().getCards().get(card.getContainingPile().getCards().size() - 2);
+        List<Pile> allPiles = foundationPiles;
+        allPiles.addAll(tableauPiles);
+        Pile foundationPile = getValidIntersectingPile(card, allPiles);
+        if (foundationPile == null) {
+            foundationPile = card.getContainingPile();
         }
 
-        if (pile != null && Card.isOppositeColor(card, pile.getTopCard())) {
-            handleValidMove(card, pile);
-            if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown() && Card.CardRank.values()[rank.ordinal() + 1] == pile.getTopCard().getRank()) {
-                lastCardFromPrePile.flip();
-            }
-        }
-        else if (foundationPile != null && Card.sortFoundationPile(card, foundationPile.getTopCard())) {
+        if (isMoveValid(card, foundationPile)) {
             handleValidMove(card, foundationPile);
-            if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown()) {
-                lastCardFromPrePile.flip();
+            if (sourcePile.getCards().size() - draggedCards.size() > 0){
+                if (sourcePile.getNthCard(draggedCards.size()).isFaceDown()) {
+                    sourcePile.getNthCard(draggedCards.size()).flip();
+                }
             }
         }
         else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards.clear();
         }
+        draggedCards.clear();
     };
 
     public boolean isGameWon() {
@@ -148,16 +145,43 @@ public class Game extends Pane {
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
+        if (destPile.getPileType().equals(Pile.PileType.FOUNDATION)) {
+            if (destPile.numOfCards() == 0 && card.getRank().getRank() == 1) {
+                return true;
+            }
 
-        return true;
+            Card destPileLastCard = destPile.getTopCard();
+
+            if (destPileLastCard.getRank().getRank() + 1 == card.getRank().getRank()) {
+                return true;
+            }
+        }
+        else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)) {
+            Card destPileLastCard = destPile.getTopCard();
+
+            if (card.getRank().getRank() != 13 && destPile.numOfCards() == 0) {
+                return false;
+            }
+            if (card.getRank().getRank() == 13 && destPile.numOfCards() == 0) {
+                return true;
+            }
+
+            Card.CardRank rank = destPileLastCard.getRank();
+
+            if (Card.isOppositeColor(card, destPileLastCard) && rank.getRank() == (card.getRank().getRank() + 1)) {
+                return true;
+            }
+        }
+
+        return false;
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
         for (Pile pile : piles) {
-            if (!pile.equals(card.getContainingPile()) &&
-                    isOverPile(card, pile) &&
-                    isMoveValid(card, pile))
+            if (!pile.equals(card.getContainingPile()) && isOverPile(card, pile) && isMoveValid(card, pile)) {
                 result = pile;
+                break;
+            }
         }
         isGameWon();
         return result;
@@ -195,8 +219,6 @@ public class Game extends Pane {
             msg = String.format("Placed %s to %s.", card, destPile.getTopCard());
             draggedCards.forEach(MouseUtil::slideBack);
         }
-        //System.out.println(msg);
-        draggedCards.clear();
     }
 
 

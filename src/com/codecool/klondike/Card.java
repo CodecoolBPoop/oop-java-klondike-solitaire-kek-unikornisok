@@ -91,10 +91,6 @@ public class Card extends ImageView {
         }
     }
 
-    public static boolean isSameSuit(Card card1, Card card2) {
-        return card1.getSuit() == card2.getSuit();
-    }
-
     public static List<Card> createNewDeck() {
         List<Card> result = new ArrayList<>();
 
@@ -211,11 +207,16 @@ public class Card extends ImageView {
         JACK(11),
         QUEEN(12),
         KING(13);
+        private int rank;
 
 
         CardRank(int i) {
+            this.rank = i;
         }
 
+        public int getRank() {
+            return rank;
+        }
     }
 
 }
