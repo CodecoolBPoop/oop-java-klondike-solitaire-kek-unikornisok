@@ -44,6 +44,10 @@ public class Pile extends Pane {
         return getCards().size();
     }
 
+    public Card getNthCard (int index) {
+        return cards.get(cards.size() - index - 1);
+    }
+
     public boolean isEmpty() {
         return cards.isEmpty();
     }
