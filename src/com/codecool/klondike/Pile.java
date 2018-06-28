@@ -53,7 +53,7 @@ public class Pile extends Pane {
     }
 
     public void clear() {
-
+        cards = FXCollections.observableArrayList();
     }
 
     public void addCard(Card card) {

@@ -119,8 +119,13 @@ public class Game extends Pane {
     };
 
     public boolean isGameWon() {
-        //TODO
-        return false;
+        for (int i = 0; i < tableauPiles.size(); i++) {
+            if (tableauPiles.get(i).isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public Game() {
@@ -159,11 +164,13 @@ public class Game extends Pane {
         else if (destPile.getPileType().equals(Pile.PileType.TABLEAU)) {
             Card destPileLastCard = destPile.getTopCard();
 
-            if (card.getRank().getRank() != 13 && destPile.numOfCards() == 0) {
-                return false;
-            }
-            if (card.getRank().getRank() == 13 && destPile.numOfCards() == 0) {
-                return true;
+            if (destPile.numOfCards() == 0) {
+                if (card.getRank().getRank() != 13) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
             }
 
             Card.CardRank rank = destPileLastCard.getRank();
@@ -208,7 +215,10 @@ public class Game extends Pane {
             } else {
                 draggedCards.forEach(MouseUtil::slideBack);
             }
-        } else if (!destPile.isEmpty() && Card.CardRank.values()[rank.ordinal() + 1] == destPile.getTopCard().getRank()) {
+        } else if (rank.getRank() == 13) {
+            MouseUtil.slideToDest(draggedCards, destPile);
+        }
+        else if (!destPile.isEmpty() && Card.CardRank.values()[rank.ordinal() + 1] == destPile.getTopCard().getRank()) {
             MouseUtil.slideToDest(draggedCards, destPile);
         }
         else if(destPile.getPileType().equals(Pile.PileType.FOUNDATION) && Card.sortFoundationPile(card, destPile.getTopCard())) {
