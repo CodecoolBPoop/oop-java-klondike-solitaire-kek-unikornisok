@@ -63,15 +63,26 @@ public class Game extends Pane {
         double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
-        draggedCards.add(card);
 
-        card.getDropShadow().setRadius(20);
-        card.getDropShadow().setOffsetX(10);
-        card.getDropShadow().setOffsetY(10);
+        List<Card> cardsToDrag = FXCollections.observableArrayList();
+        cardsToDrag = activePile.getCards();
+        boolean needsToBeDragged = false;
+        for (int i = 0; i < cardsToDrag.size(); i++) {
+            if (cardsToDrag.get(i) == card) {
+                needsToBeDragged = true;
+            }
+            if (needsToBeDragged) {
+                draggedCards.add(cardsToDrag.get(i));
 
-        card.toFront();
-        card.setTranslateX(offsetX);
-        card.setTranslateY(offsetY);
+                cardsToDrag.get(i).getDropShadow().setRadius(20);
+                cardsToDrag.get(i).getDropShadow().setOffsetX(10);
+                cardsToDrag.get(i).getDropShadow().setOffsetY(10);
+
+                cardsToDrag.get(i).toFront();
+                cardsToDrag.get(i).setTranslateX(offsetX);
+                cardsToDrag.get(i).setTranslateY(offsetY);
+            }
+        }
     };
 
     private EventHandler<MouseEvent> onMouseReleasedHandler = e -> {
@@ -81,6 +92,8 @@ public class Game extends Pane {
         Pile foundationPile = getValidIntersectingPile(card, foundationPiles);
         Pile pile = getValidIntersectingPile(card, tableauPiles);
         Card lastCardFromPrePile = null;
+        Card.CardRank rank = card.getRank();
+
         if (card.getContainingPile().getCards().size() > 1) {
             lastCardFromPrePile = card.getContainingPile().getCards().get(card.getContainingPile().getCards().size() - 2);
         }
@@ -94,14 +107,12 @@ public class Game extends Pane {
         else if (foundationPile != null && Card.sortFoundationPile(card, foundationPile.getTopCard())) {
             handleValidMove(card, foundationPile);
             if (card.getContainingPile().getCards().size() > 1 && lastCardFromPrePile.isFaceDown()) {
-                System.out.println("pina");
-
                 lastCardFromPrePile.flip();
             }
         }
         else {
             draggedCards.forEach(MouseUtil::slideBack);
-//            draggedCards = null;
+            draggedCards.clear();
         }
     };
 
