@@ -63,7 +63,11 @@ public class Game extends Pane {
         double offsetY = e.getSceneY() - dragStartY;
 
         draggedCards.clear();
-        draggedCards.add(card);
+        if (card == activePile.getTopCard()) {
+            draggedCards.add(card);
+        } else if (card != activePile.getTopCard() && !card.isFaceDown()) {
+            draggedCards.add(activePile.getTopCard());
+        }
 
         card.getDropShadow().setRadius(20);
         card.getDropShadow().setOffsetX(10);
